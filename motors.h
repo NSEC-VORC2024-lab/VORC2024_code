@@ -36,12 +36,18 @@ void setPWMMotors(int c1, int c2, int c3, int c4) //Declare drivertrain's motor 
 
 void setPWMLinear(int n1, int n2) //Declare linear's motor controlling function
 {
+  char dbg_str[30];
+  sprintf(dbg_str,"N1: %d/tN2: %d", n1, n2);
+  Serial.println(dbg_str);
   pwm.setPin(PWM_CHANNEL1, n1, 0);
   pwm.setPin(PWM_CHANNEL2, n2, 0);
 }
 
 void setPWMIntake(int s1, int s2) //Declare intake's motor controlling function
 {
+  char dbg_str[30];
+  sprintf(dbg_str,"S1: %d/tS2: %d", s1, s2);
+  Serial.println(dbg_str);
   pwm.setPin(PWM_CHANNEL3, s1, 0);
   pwm.setPin(PWM_CHANNEL4, s2, 0);
 }
@@ -49,9 +55,6 @@ void setPWMIntake(int s1, int s2) //Declare intake's motor controlling function
 void setServoAngle(int channel, int angle) //Declare servo's angle controlling function
 {
   pwm.setPWMFreq(60);
-  Serial.println("Giá trị góc của: ");
-  Serial.print(channel);
-  Serial.println(angle);
   int pulseWidth = map(angle, 0, 180, MIN_PULSE_WIDTH, MAX_PULSE_WIDTH);
   pwm.setPWM(channel, 0, pulseWidth);
 }
