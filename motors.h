@@ -60,6 +60,7 @@ void setServoAngle(int channel, int angle) //Declare servo's angle controlling f
 }
 void setServo360(int channel, int pulse) //Declare servo 360 degree controlling function
 {
+  pwm.setPWMFreq(60);
   pwm.setPWM(channel, 0, pulse);
 }
 void initMotors()
