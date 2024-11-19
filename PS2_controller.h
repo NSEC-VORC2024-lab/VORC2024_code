@@ -188,19 +188,19 @@ bool Servo4Direction = true; //Check if servo 4 is rotating clockwise or counter
     {
       Serial.println("Nút Y được nhấn");
       Serial.println("Servo 3 đang quay cùng chiều kim đồng hồ");
-      setServo360(Servo3, 255);      
+      setServo360(Servo3, 205);      
     }
     case(1 && 1):
     {
       Serial.println("Nút Y được nhấn");
       Serial.println("Servo 3 đang quay ngược chiều kim đồng hồ"); 
-      setServo360(Servo3, -255);     
+      setServo360(Servo3, 410);     
     }
     Servo3Direction = !Servo3Direction;
   }
   //Press L1 to stop servo 3
   if(ps2x.ButtonPressed(PSB_L1))
-    setServo360(Servo3, 0);
+    setServo360(Servo3, 307);
 
   //Press X button to use servo 4
   switch(ps2x.ButtonPressed(PSB_SQUARE) && Servo4Direction)
@@ -209,19 +209,19 @@ bool Servo4Direction = true; //Check if servo 4 is rotating clockwise or counter
     {
       Serial.println("Nút X được nhấn");
       Serial.println("Servo 4 đang quay cùng chiều kim đồng hồ");
-      setServo360(Servo4, 255);      
+      setServo360(Servo4, 205);      
     }
     case(1 && 1):
     {
       Serial.println("Nút X được nhấn");
       Serial.println("Servo 4 đang quay ngược chiều kim đồng hồ"); 
-      setServo360(Servo4, -255);     
+      setServo360(Servo4, 410);     
     }
     Servo4Direction = !Servo4Direction;
   }
 
   //Press L2 button to stop servo 4
   if(ps2x.ButtonPressed(PSB_L2))
-    setServo360(Servo4, 0);
+    setServo360(Servo4, 307);
   return 1;
 }
