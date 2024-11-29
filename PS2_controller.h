@@ -14,7 +14,7 @@ PS2X ps2x;  // Create PS2 Controller Class object
 #define LJ 128 
 #define RJ 127
 
-int speed = 2048; //Declare motor speed
+int speed = 3000; //Declare motor speed
 
 void setupPS2controller() //Keep checking until the receiver is connected
 {
@@ -70,6 +70,8 @@ bool PS2control()
   if (ps2x.Analog(PSS_LY) == 128 && ps2x.Analog(PSS_RX) == 128) 
   {
     setPWMMotor(0, 0, 0, 0, 0, 0);
+    setPWMLinear(0, 0);
+    setPWMIntake(0, 0);
     return 0;
   }
 
@@ -90,8 +92,8 @@ bool PS2control()
     //The case where the left joystick is up
     case(true):
       {
-        M1A = map(ps2x.Analog(PSS_LY), 128, 0, 0, speed);
-        M2A = map(ps2x.Analog(PSS_LY), 128, 0, 0, speed);
+        M1A = map(ps2x.Analog(PSS_LY), 128, 0, 0, 2048);
+        M2A = map(ps2x.Analog(PSS_LY), 128, 0, 0, 2048);
         
         Serial.printf("M1A: %d M2A: %d", M1A, M2A);
 
@@ -101,8 +103,8 @@ bool PS2control()
     //The case where the left joystick is down
     case(false):
       {
-        M1B = map(ps2x.Analog(PSS_LY), 128, 255, 0, speed);
-        M2B = map(ps2x.Analog(PSS_LY), 128, 255, 0, speed);
+        M1B = map(ps2x.Analog(PSS_LY), 128, 255, 0, 2048);
+        M2B = map(ps2x.Analog(PSS_LY), 128, 255, 0, 2048);
 
         Serial.printf("M1B: %d M2B: %d", M1B, M2B);    
 
@@ -114,7 +116,7 @@ bool PS2control()
     //The case where the right joystick is left
     case(true):
       {
-        XL = map(ps2x.Analog(PSS_RX), 127, 0, 0, speed);
+        XL = map(ps2x.Analog(PSS_RX), 127, 0, 0, 2048);
       
         Serial.println("XL: "); Serial.print(XL);
 
@@ -124,7 +126,7 @@ bool PS2control()
     //The case where the left joystick is right 
     case(false):
       {
-        XR = map(ps2x.Analog(PSS_RX), 127, 255, 0, speed);
+        XR = map(ps2x.Analog(PSS_RX), 127, 255, 0, 2048);
 
         Serial.println("XR: "); Serial.print(XR);
 
