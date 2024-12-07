@@ -6,15 +6,17 @@ PS2X ps2x;  // Create PS2 Controller Class object
 #define PS2_SEL 15 
 #define PS2_CLK 14 
 
-#define CW_usec 1  //Value to make servo 360-degree spin clockwise
-#define STOP_usec 1.5  //Value to stop servo 360-degree
-#define CCW_usec 2 //Value to make servo 360-degree spin counter-clockwise 
+#define CW_usec 250  //Value to make servo 360-degree spin clockwise
+#define STOP_usec 307.5  //Value to stop servo 360-degree
+#define CCW_usec 380 //Value to make servo 360-degree spin counter-clockwise 
 
 //Calibration for PS2
 #define LJ 128 
 #define RJ 127
 
-int speed = 3000; //Declare motor speed
+int drive_SPD = 2048;
+int IT_speed = 2048; //Declare motor speed
+int LN_speed = 3000;
 
 void setupPS2controller() //Keep checking until the receiver is connected
 {
@@ -72,6 +74,9 @@ bool PS2control()
     setPWMMotor(0, 0, 0, 0, 0, 0);
     setPWMLinear(0, 0);
     setPWMIntake(0, 0);
+    setServoAngle(Servo_3, 0);
+    setServo360(Servo_1, STOP_usec);
+    setServo360(Servo_2, STOP_usec);
     return 0;
   }
 
@@ -92,8 +97,8 @@ bool PS2control()
     //The case where the left joystick is up
     case(true):
       {
-        M1A = map(ps2x.Analog(PSS_LY), 128, 0, 0, 2048);
-        M2A = map(ps2x.Analog(PSS_LY), 128, 0, 0, 2048);
+        M1A = map(ps2x.Analog(PSS_LY), 128, 0, 0, drive_SPD);
+        M2A = map(ps2x.Analog(PSS_LY), 128, 0, 0, drive_SPD);
         
         Serial.printf("M1A: %d M2A: %d", M1A, M2A);
 
@@ -103,8 +108,8 @@ bool PS2control()
     //The case where the left joystick is down
     case(false):
       {
-        M1B = map(ps2x.Analog(PSS_LY), 128, 255, 0, 2048);
-        M2B = map(ps2x.Analog(PSS_LY), 128, 255, 0, 2048);
+        M1B = map(ps2x.Analog(PSS_LY), 128, 255, 0, drive_SPD);
+        M2B = map(ps2x.Analog(PSS_LY), 128, 255, 0, drive_SPD);
 
         Serial.printf("M1B: %d M2B: %d", M1B, M2B);    
 
@@ -116,7 +121,7 @@ bool PS2control()
     //The case where the right joystick is left
     case(true):
       {
-        XL = map(ps2x.Analog(PSS_RX), 127, 0, 0, 2048);
+        XL = map(ps2x.Analog(PSS_RX), 127, 0, 0, drive_SPD);
       
         Serial.println("XL: "); Serial.print(XL);
 
@@ -126,7 +131,7 @@ bool PS2control()
     //The case where the left joystick is right 
     case(false):
       {
-        XR = map(ps2x.Analog(PSS_RX), 127, 255, 0, 2048);
+        XR = map(ps2x.Analog(PSS_RX), 127, 255, 0, drive_SPD);
 
         Serial.println("XR: "); Serial.print(XR);
 
@@ -135,26 +140,26 @@ bool PS2control()
   }
   setPWMMotor(M1A, M1B, M2A, M2B, XL, XR); //Set PWM for drivertrain's motors
 
-  switch(D_PAD_CHECK()) //Control Linear motor by D_PAD button
+  switch(RL_CHECK()) //Control Linear and Intake motor by using R1, R2, L1, L2 button 
   {
     case(1):
       {
-        setPWMLinear(speed, 1);
+        setPWMLinear(LN_speed, 1);
         break;
       }
     case(2):
       {
-        setPWMLinear(speed, 0);
+        setPWMLinear(LN_speed, 0);
         break;
       }
     case(3):
       {
-        setPWMIntake(speed, 1);
+        setPWMIntake(IT_speed, 1);
         break;
       }
     case(4):
       {
-        setPWMIntake(speed, 0);
+        setPWMIntake(IT_speed, 0);
         break;
       }
     case(0):
@@ -165,30 +170,30 @@ bool PS2control()
       }
   }
 
-  switch(RL_CHECK()) //Control 360-degree servo by R1, R2, L1, L2 button 
+  switch(D_PAD_CHECK()) //Control 360-degree Servo by D_PAD button
   {
     case(1): 
     {
       Serial.println("Servo 1 quay cùng chiều kim đồng hồ");
-      setServo360(Servo_1, CW_usec);
+      setServo360(Servo_1, CCW_usec);
       break;
     }
     case(2):
     {
       Serial.println("Servo 1 quay ngược chiều kim đồng hồ");
-      setServo360(Servo_1, CCW_usec);
+      setServo360(Servo_1, CW_usec);
       break;      
     }
     case(3):
     {
       Serial.println("Servo 2 quay cùng chiều kim đồng hồ");
-      setServo360(Servo_2, CW_usec);
+      setServo360(Servo_2, CCW_usec);
       break; 
     }
     case(4):
     {
       Serial.println("Servo 2 quay ngược chiều kim đồng hồ");
-      setServo360(Servo_2, CCW_usec);
+      setServo360(Servo_2, CW_usec);
       break;
     }
     case(0):
@@ -201,29 +206,17 @@ bool PS2control()
 
   switch(GM_CHECK()) //Control 180-degree servo by Geomatry button
   {
+    case(4):
+    {
+      Serial.println("Quay Sero 3 đến góc 90");
+      setServoAngle(Servo_3, 0);
+      break;
+    }
     case(1):
     {
       Serial.println("Quay Sero 3 đến góc 90");
-      setServoAngle(Servo_3, 90);
-      break;
-    }
-    case(4):
-    {
-      Serial.println("Quay Sero 3 đến góc 0");
-      setServoAngle(Servo_3, 0);    
-      break;  
-    }
-    case(2):
-    {
-      Serial.println("Quay Sero 4 đến góc 90");
-      setServoAngle(Servo_4, 90);     
+      setServoAngle(Servo_3, 90);     
       break; 
-    }
-    case(3):
-    {
-      Serial.println("Quay Sero 4 đến góc 0");
-      setServoAngle(Servo_4, 0);
-      break;
     }
   }
   
