@@ -16,8 +16,8 @@
 #define Servo_3 5
 #define Servo_4 4
 
-#define MIN_USEC 1 //PWM pulse-width turn servo angle to 0
-#define MAX_USEC 2 //PWM pulse-width turn servo angle to 180
+#define MIN_USEC 200 //PWM pulse-width turn servo angle to 0
+#define MAX_USEC 415 //PWM pulse-width turn servo angle to 180
 
 Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
 
@@ -135,15 +135,13 @@ void setPWMIntake(int speed, bool x) //Declare intake's motor controlling functi
 
 void setServoAngle(int channel, int angle) //Declare servo's angle controlling function
 {
-  pwm.setPWMFreq(50);
-  int pulseWidth = map(angle, 0, 180, MIN_USEC, MAX_USEC);
-  pwm.writeMicroseconds(channel, pulseWidth);
+  int pulseWidth = map(angle, 0, 90, MIN_USEC, MAX_USEC);
+  pwm.setPWM(channel, 0, pulseWidth);
 }
 
 void setServo360(int channel, int ms) //Declare servo 360 degree controlling function
 {
-  pwm.setPWMFreq(50);
-  pwm.writeMicroseconds(channel, ms);
+  pwm.setPWM(channel, 0, ms);
 }
 
 void initMotors()
@@ -151,13 +149,12 @@ void initMotors()
   Wire.begin(); // SDA, SCL,400000);
   pwm.begin();
   pwm.setOscillatorFrequency(27000000);
-  pwm.setPWMFreq(1600);
+  pwm.setPWMFreq(50);
   Wire.setClock(400000);
   setPWMMotor(0, 0, 0, 0, 0, 0);
   setPWMLinear(0, 0);
   setPWMIntake(0, 0);
-  setServoAngle(Servo_1, 1);
-  setServoAngle(Servo_2, 1);
-  setServo360(Servo_1, 1.5);
-  setServo360(Servo_1, 1.5);
+  setServoAngle(Servo_3, 0);
+  setServo360(Servo_1, STOP_usec);
+  setServo360(Servo_2, STOP_usec);
 }
